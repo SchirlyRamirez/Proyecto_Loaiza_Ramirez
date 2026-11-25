@@ -4,6 +4,7 @@ import com.ejemplo.catalogo.adapter.out.persistence.persistence.ProductJpaEntity
 import com.ejemplo.catalogo.adapter.out.persistence.persistence.ProductJpaRepository;
 import java.math.BigDecimal;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
  * Cuaderno, productoId 1, precio 8.000 y stock inicial 60.
  */
 @Component
+@Order(1)
 public class DataSeeder implements CommandLineRunner {
 
     private final ProductJpaRepository repository;

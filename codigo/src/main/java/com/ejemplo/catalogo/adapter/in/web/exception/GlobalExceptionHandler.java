@@ -1,5 +1,7 @@
 package com.ejemplo.catalogo.adapter.in.web.exception;
 
+import com.ejemplo.catalogo.domain.exception.InvalidOrderException;
+import com.ejemplo.catalogo.domain.exception.OrderNotFoundException;
 import com.ejemplo.catalogo.domain.exception.ProductNotFoundException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -17,6 +19,23 @@ public class GlobalExceptionHandler {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(
                 HttpStatus.NOT_FOUND, ex.getMessage());
         problem.setTitle("Producto no encontrado");
+        return problem;
+    }
+
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ProblemDetail handleOrderNotFound(OrderNotFoundException ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.NOT_FOUND, ex.getMessage());
+        problem.setTitle("Pedido no encontrado");
+        return problem;
+    }
+
+    // RN-5: error de validacion del pedido (no es un pedido RECHAZADO)
+    @ExceptionHandler(InvalidOrderException.class)
+    public ProblemDetail handleInvalidOrder(InvalidOrderException ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST, ex.getMessage());
+        problem.setTitle("Pedido inválido");
         return problem;
     }
 
