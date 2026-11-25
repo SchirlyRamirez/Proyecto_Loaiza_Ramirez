@@ -1,0 +1,88 @@
+EVIDENCIA · Q3 / fila 0 · arquitectura hexagonal
+Salidas literales, copiadas sin editar.
+
+================================================================
+1. Regla de arquitectura pasando
+================================================================
+$ bash verificar-regla.sh
+== Regla 1: domain no importa org.springframework ni jakarta
+OK: ningun import prohibido en domain
+== Regla 2: application no importa ningun adapter
+OK: ningun import de adapter en application
+(código de salida: 0)
+
+================================================================
+2. La misma regla con una violacion inducida (sin commit, revertida con git checkout)
+   Violacion: se agrego 'import jakarta.persistence.Entity;' a domain/model/Order.java
+================================================================
+$ git diff --stat (violación en el árbol de trabajo, sin commit)
+ codigo/src/main/java/com/ejemplo/catalogo/domain/model/Order.java | 2 ++
+ 1 file changed, 2 insertions(+)
+$ bash verificar-regla.sh
+== Regla 1: domain no importa org.springframework ni jakarta
+src/main/java/com/ejemplo/catalogo/domain/model/Order.java:3:import jakarta.persistence.Entity;
+VIOLACION: el dominio importa infraestructura
+== Regla 2: application no importa ningun adapter
+OK: ningun import de adapter en application
+(código de salida: 1)
+$ git checkout -- codigo/src/main/java/com/ejemplo/catalogo/domain/model/Order.java ; git status --short
+(árbol limpio)
+
+================================================================
+3. Muestra de la Hoja 1 (sobre la etiqueta hoja-1, arranque limpio)
+================================================================
+$ git checkout hoja-1
+$ rm -f pedidos.jsonl ; (perfiles muestra,muestra1)
+PEDIDO 1 CONFIRMADO total=72000
+PEDIDO 2 CONFIRMADO total=76000
+PEDIDO 3 RECHAZADO total=0
+PEDIDO 4 CONFIRMADO total=311600
+
+Sobre la etiqueta final (pedidos en pedidos.jsonl, archivo borrado antes) imprime las mismas cuatro lineas:
+PEDIDO 1 CONFIRMADO total=72000
+PEDIDO 2 CONFIRMADO total=76000
+PEDIDO 3 RECHAZADO total=0
+PEDIDO 4 CONFIRMADO total=311600
+
+================================================================
+4. Muestra de la Hoja 2 (Q3), dos corridas en el mismo directorio (etiqueta final)
+================================================================
+$ git checkout final
+$ rm -f pedidos.jsonl
+-- Corrida 1 (perfiles muestra,muestra2, --muestra.corrida=1)
+PEDIDO 1 CONFIRMADO total=72000
+-- Corrida 2 (proceso nuevo, sin borrar el archivo; --muestra.corrida=2)
+PEDIDO 1 CONFIRMADO total=72000
+PEDIDO 2 RECHAZADO total=0
+PEDIDO 3 CONFIRMADO total=387600
+
+$ cat pedidos.jsonl   (despues de la corrida 2)
+{"id":1,"clienteId":"C-001","productoId":1,"cantidad":9,"estado":"CONFIRMADO","total":72000}
+{"id":2,"clienteId":"C-002","productoId":1,"cantidad":52,"estado":"RECHAZADO","total":0}
+{"id":3,"clienteId":"C-003","productoId":1,"cantidad":51,"estado":"CONFIRMADO","total":387600}
+
+================================================================
+5. git diff --name-status hoja-1 final
+================================================================
+$ git diff --name-status hoja-1 final
+M	LEEME.md
+A	codigo/src/main/java/com/ejemplo/catalogo/adapter/in/cli/MuestraHoja2Runner.java
+A	codigo/src/main/java/com/ejemplo/catalogo/adapter/out/persistence/jsonl/JsonlOrderRepository.java
+M	codigo/src/main/java/com/ejemplo/catalogo/adapter/out/persistence/persistence/OrderPersistenceAdapter.java
+A	codigo/src/test/java/com/ejemplo/catalogo/adapter/out/persistence/jsonl/JsonlOrderRepositoryTest.java
+
+================================================================
+6. git log
+================================================================
+$ git log --format="%h %ad %an%d %s" --date=iso
+d22e247 2026-11-25 14:25:00 -0500 Schirly Ximena Ramírez López (HEAD -> main) Maven Wrapper (mvnw) y LEEME con sus comandos
+88db001 2026-11-24 19:26:03 -0500 Schirly Ximena Ramírez López ADR-0002 e informe: medicion del cambio de la Hoja 2
+aed8c00 2026-11-24 19:24:46 -0500 Jacobo Loaiza Castañeda (tag: final) Hoja 2: prueba del adaptador JSONL, muestra de dos corridas y LEEME
+0e46abb 2026-11-24 19:24:44 -0500 Schirly Ximena Ramírez López Hoja 2: adaptador JSONL de pedidos y cambio de enlace del puerto OrderRepository
+83cbed8 2026-11-24 19:23:55 -0500 Jacobo Loaiza Castañeda (tag: hoja-1) Hoja 1: pruebas de RN-1 a RN-5, regla de arquitectura (grep) y LEEME
+d4fde1d 2026-11-24 19:23:05 -0500 Schirly Ximena Ramírez López Hoja 1: adaptador JPA de pedidos, controlador REST y muestra de la Hoja 1
+02257f5 2026-11-24 19:23:05 -0500 Jacobo Loaiza Castañeda Hoja 1: dominio de pedidos, puertos y caso de uso (RN-1 a RN-5)
+3c54e79 2026-11-24 19:22:00 -0500 Schirly Ximena Ramírez López ADR-0001: arquitectura hexagonal con H2, alternativas y prediccion del costo de la Hoja 2
+2ff0b49 2026-11-24 19:21:46 -0500 Jacobo Loaiza Castañeda Punto de partida hexagonal: catalogo con H2 y un solo producto (Cuaderno)
+
+(El commit que agrega este archivo es posterior a esta salida.)
