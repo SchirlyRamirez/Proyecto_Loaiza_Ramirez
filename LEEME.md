@@ -3,18 +3,18 @@
 Integrantes: Jacobo Loaiza Castañeda y Schirly Ximena Ramírez López.
 Producto: Cuaderno · precio 8.000 · stock inicial 60 · umbral u = 10 · descuento d = 5 %.
 
-Requisitos: Java 21 y Maven (`mvn`). La persistencia es H2 en memoria (no hace falta Docker; el `compose.yaml` de la carpeta de partida queda sin usar). Todos los comandos se corren desde la carpeta `codigo/`.
+Requisitos: Java 21. No hace falta instalar Maven: el proyecto trae el Maven Wrapper (`./mvnw` en Git Bash, `.\mvnw.cmd` en PowerShell), que lo descarga la primera vez. La persistencia es H2 en memoria (no hace falta Docker; el `compose.yaml` de la carpeta de partida queda sin usar). Todos los comandos se corren desde la carpeta `codigo/`.
 
 ## Pruebas
 
 ```
-mvn test
+./mvnw test
 ```
 
 ## Muestra de la Hoja 1 (desde un arranque limpio: H2 en memoria arranca vacía)
 
 ```
-mvn -q spring-boot:run "-Dspring-boot.run.profiles=muestra,muestra1"
+./mvnw -q spring-boot:run "-Dspring-boot.run.profiles=muestra,muestra1"
 ```
 
 Salida esperada:
@@ -44,7 +44,7 @@ Como el archivo persiste, **el arranque limpio de cualquier muestra exige borrar
 
 ```
 rm -f pedidos.jsonl
-mvn -q spring-boot:run "-Dspring-boot.run.profiles=muestra,muestra1"
+./mvnw -q spring-boot:run "-Dspring-boot.run.profiles=muestra,muestra1"
 ```
 
 ### Muestra de la Hoja 2: dos corridas en el mismo directorio
@@ -53,7 +53,7 @@ El archivo se borra solo antes de la corrida 1 (en PowerShell: `Remove-Item pedi
 
 ```
 rm -f pedidos.jsonl
-mvn -q spring-boot:run "-Dspring-boot.run.profiles=muestra,muestra2" "-Dspring-boot.run.arguments=--muestra.corrida=1"
+./mvnw -q spring-boot:run "-Dspring-boot.run.profiles=muestra,muestra2" "-Dspring-boot.run.arguments=--muestra.corrida=1"
 ```
 
 Salida esperada de la corrida 1:
@@ -65,7 +65,7 @@ PEDIDO 1 CONFIRMADO total=72000
 Después de que la aplicación terminó (reinicio), sin borrar el archivo:
 
 ```
-mvn -q spring-boot:run "-Dspring-boot.run.profiles=muestra,muestra2" "-Dspring-boot.run.arguments=--muestra.corrida=2"
+./mvnw -q spring-boot:run "-Dspring-boot.run.profiles=muestra,muestra2" "-Dspring-boot.run.arguments=--muestra.corrida=2"
 ```
 
 Salida esperada de la corrida 2:
