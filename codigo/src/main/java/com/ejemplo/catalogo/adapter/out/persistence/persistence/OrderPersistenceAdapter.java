@@ -4,11 +4,13 @@ import com.ejemplo.catalogo.domain.model.Order;
 import com.ejemplo.catalogo.domain.model.OrderStatus;
 import com.ejemplo.catalogo.domain.port.out.OrderRepository;
 import java.util.Optional;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-/** Adaptador de salida de pedidos sobre JPA/H2 (Hoja 1). */
-@Component
+/**
+ * Adaptador de salida de pedidos sobre JPA/H2 (Hoja 1).
+ * Desde la Hoja 2 ya no es un bean (sin @Component): los pedidos viven en pedidos.jsonl
+ * (JsonlOrderRepository). Para volver a JPA basta devolverle @Component y quitarselo al otro.
+ */
 @Transactional(readOnly = true)
 public class OrderPersistenceAdapter implements OrderRepository {
 
